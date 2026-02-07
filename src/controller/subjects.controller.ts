@@ -4,62 +4,64 @@ import { departments, subjects } from "../schema";
 import { db } from "../db";
 
 const subjectsController = asyncHandler(async (req, res) => {
-    const { search, department, page= 1, limit= 10 } = req.query;
+  const { search, department, page = 1, limit = 10 } = req.query;
 
-    const currentPage = Math.max(1, +page);
-    const limitPerPage = Math.max(1, +limit);
+  const pageParam = Array.isArray(page) ? page[0] : page;
+  const limitParam = Array.isArray(limit) ? limit[0] : limit;
 
-    const offset = (currentPage - 1) * limitPerPage;
+  const currentPage = Math.max(1, Number(pageParam) || 1);
+  const limitPerPage = Math.max(1, Number(limitParam) || 10);
 
-    const filterConditions = [];
+  const offset = (currentPage - 1) * limitPerPage;
 
-    if(search){
-        filterConditions.push(
-            or(
-                ilike(subjects.name, `%${search}%`),
-                ilike(subjects.code, `%${search}%`),
-            )
-        )
-    }
+  const filterConditions = [];
 
-    if(department){
-        filterConditions.push(
-            or( ilike(departments.name, `%${department}%`) )
-        );
-    }
+  if (search) {
+    filterConditions.push(
+      or(
+        ilike(subjects.name, `%${search}%`),
+        ilike(subjects.code, `%${search}%`),
+      ),
+    );
+  }
 
-    const  whereClause = filterConditions.length > 0 ? and(...filterConditions) : undefined;
+  if (department) {
+    filterConditions.push(or(ilike(departments.name, `%${department}%`)));
+  }
 
-    const countResult = await db
-    .select({count: sql<number>`count(*)`})
+  const whereClause =
+    filterConditions.length > 0 ? and(...filterConditions) : undefined;
+
+  const countResult = await db
+    .select({ count: sql<number>`count(*)` })
     .from(subjects)
     .leftJoin(departments, eq(subjects.departmentId, departments.id))
-    .where(whereClause)
+    .where(whereClause);
 
-    const totalCount = countResult[0]?.count ?? 0;
+  const totalCount = countResult[0]?.count ?? 0;
 
-    const subjectList = await db.select({
-        ...getTableColumns(subjects),
-        department: {...getTableColumns(departments)} 
+  const subjectList = await db
+    .select({
+      ...getTableColumns(subjects),
+      department: { ...getTableColumns(departments) },
     })
     .from(subjects)
     .leftJoin(departments, eq(subjects.departmentId, departments.id))
     .where(whereClause)
     .limit(limitPerPage)
     .offset(offset)
-    .orderBy(desc(subjects.createdAt))
+    .orderBy(desc(subjects.createdAt));
 
-
-    // console.log(subjectList);
-    res.status(200).json({
-        data: subjectList,
-        pagination:{
-            page: currentPage,
-            limit: limitPerPage,
-            total: totalCount,
-            totalPages: Math.ceil(totalCount / limitPerPage)
-        }
-    })
+  // console.log(subjectList);
+  res.status(200).json({
+    data: subjectList,
+    pagination: {
+      page: currentPage,
+      limit: limitPerPage,
+      total: totalCount,
+      totalPages: Math.ceil(totalCount / limitPerPage),
+    },
+  });
 });
 
 export { subjectsController };
