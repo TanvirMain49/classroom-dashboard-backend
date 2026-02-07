@@ -1,22 +1,13 @@
-import express from "express";
+import app from "./app";
 
-const app = express();
 const PORT = 8000;
 
-// Middleware
-app.use(express.json());
 
-// Routes
-app.get("/", (req, res) => {
-  res.json({ message: "Welcome to Classroom Backend API" });
-});
-
-app.get("/api/health", (req, res) => {
-  res.json({ status: "Server is running" });
-});
+app.get('/', (req, res)=>{
+  res.send("Welcome to Classroom server")
+})
 
 // Start server
 app.listen(PORT, () => {
   console.log(`✓ Server running at http://localhost:${PORT}`);
-  console.log(`✓ API available at http://localhost:${PORT}/api`);
 });
