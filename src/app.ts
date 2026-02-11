@@ -1,10 +1,9 @@
 import express from "express";
 import cors from "cors";
 import subjectRoutes from "./routes/subjects.routes";
+import securityMiddleware from "./middleware/security";
 
 const app = express();
-
-app.use(express.json());
 
 const frontendUrl = process.env.FRONTEND_URL;
 if (!frontendUrl) {
@@ -15,6 +14,9 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
 }));
+
+app.use(express.json());
+app.use(securityMiddleware);
 
 
 app.use("/api/v1/subjects", subjectRoutes);
