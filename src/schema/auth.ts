@@ -11,7 +11,7 @@ export const roleEnum = pgEnum('role', ['student', 'teacher', 'admin']);
 export const user = pgTable('users', {
     id: text('id').primaryKey(),
     name: text('name').notNull(),
-    email: text('email').notNull(),
+    email: text('email').notNull().unique(),
     image: text('image'),
     role: roleEnum('role').notNull().default('student'),
     imageCldPubId: text('image_cld_pub_id'),
