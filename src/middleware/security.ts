@@ -8,7 +8,7 @@ const securityMiddleware = asyncHandler( async(req: Request, res: Response, next
 
     if (req.method === "OPTIONS") return next();
 
-    if(process.env.NODE_ENV === 'test') return;
+    if(process.env.NODE_ENV === 'test') return next();
 
     const role: RateLimitRole = req.user?.role ?? 'guest';
 
