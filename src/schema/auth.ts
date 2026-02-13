@@ -10,25 +10,20 @@ import {
 } from "drizzle-orm/pg-core";
 
 const timestamps = {
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at")
-    .defaultNow()
-    .$onUpdate(() => new Date())
-    .notNull(),
-};
+    createdAt : timestamp('created_at').defaultNow().notNull(),
+    updatedAt : timestamp('updated_at').defaultNow().$onUpdate(()=> new Date()).notNull()
+}
 
-export const roleEnum = pgEnum("role", ["student", "teacher", "admin"]);
+export const roleEnum = pgEnum('role', ['student', 'teacher', 'admin']);
 
-export const user = pgTable("user", {
-  id: text("id").primaryKey(),
-  name: text("name").notNull(),
-  email: text("email").notNull(),
-  emailVerified: boolean("email_verified").notNull(),
-  image: text("image"),
-  role: roleEnum("role").notNull().default("student"),
-  imageCldPubId: text("image_cld_pub_id"),
-
-  ...timestamps,
+export const user = pgTable('users', {
+    id: text('id').primaryKey(),
+    name: text('name').notNull(),
+    email: text('email').notNull().unique(),
+    image: text('image'),
+    role: roleEnum('role').notNull().default('student'),
+    imageCldPubId: text('image_cld_pub_id'),
+    ...timestamps
 });
 
 export const session = pgTable(
