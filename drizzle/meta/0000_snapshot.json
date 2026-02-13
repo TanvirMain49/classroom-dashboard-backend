@@ -1,5 +1,5 @@
 {
-  "id": "8b096d5e-11e3-4247-a73d-e98bf4927154",
+  "id": "efeb4c93-2ec5-44e3-94ea-1c653ff944ed",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -149,10 +149,10 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "classes_teacher_id_users_id_fk": {
-          "name": "classes_teacher_id_users_id_fk",
+        "classes_teacher_id_user_id_fk": {
+          "name": "classes_teacher_id_user_id_fk",
           "tableFrom": "classes",
-          "tableTo": "users",
+          "tableTo": "user",
           "columnsFrom": [
             "teacher_id"
           ],
@@ -349,10 +349,10 @@
         }
       },
       "foreignKeys": {
-        "enrollments_student_id_users_id_fk": {
-          "name": "enrollments_student_id_users_id_fk",
+        "enrollments_student_id_user_id_fk": {
+          "name": "enrollments_student_id_user_id_fk",
           "tableFrom": "enrollments",
-          "tableTo": "users",
+          "tableTo": "user",
           "columnsFrom": [
             "student_id"
           ],
@@ -596,10 +596,10 @@
         }
       },
       "foreignKeys": {
-        "account_user_id_users_id_fk": {
-          "name": "account_user_id_users_id_fk",
+        "account_user_id_user_id_fk": {
+          "name": "account_user_id_user_id_fk",
           "tableFrom": "account",
-          "tableTo": "users",
+          "tableTo": "user",
           "columnsFrom": [
             "user_id"
           ],
@@ -638,8 +638,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "expire_at": {
-          "name": "expire_at",
+        "expires_at": {
+          "name": "expires_at",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true
@@ -648,13 +648,13 @@
           "name": "ip_address",
           "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "user_agent": {
           "name": "user_agent",
           "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "created_at": {
           "name": "created_at",
@@ -704,10 +704,10 @@
         }
       },
       "foreignKeys": {
-        "session_user_id_users_id_fk": {
-          "name": "session_user_id_users_id_fk",
+        "session_user_id_user_id_fk": {
+          "name": "session_user_id_user_id_fk",
           "tableFrom": "session",
-          "tableTo": "users",
+          "tableTo": "user",
           "columnsFrom": [
             "user_id"
           ],
@@ -724,8 +724,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.users": {
-      "name": "users",
+    "public.user": {
+      "name": "user",
       "schema": "",
       "columns": {
         "id": {
@@ -743,6 +743,12 @@
         "email": {
           "name": "email",
           "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email_verified": {
+          "name": "email_verified",
+          "type": "boolean",
           "primaryKey": false,
           "notNull": true
         },
