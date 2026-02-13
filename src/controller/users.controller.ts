@@ -1,6 +1,6 @@
 import { and, desc, eq, getTableColumns, ilike, or, sql } from "drizzle-orm";
 import { asyncHandler } from "../utils/async-handler.utils";
-import { classes, departments, enrollments, subjects, user } from "../schema";
+import { user } from "../schema";
 import { db } from "../db";
 
 export const usersController = asyncHandler( async(req, res)=>{
