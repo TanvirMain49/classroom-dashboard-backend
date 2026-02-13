@@ -1,7 +1,6 @@
 import arcjet, { shield, detectBot, slidingWindow } from "@arcjet/node";
 
 if(!process.env.ARCJET_KEY){
-  console.log(process.env.ARCJET_KEY)
     throw new Error(
     "ARCJET_KEY environment variable is required. Sign up for your Arcjet key at https://app.arcjet.com"
   );
