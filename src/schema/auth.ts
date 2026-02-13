@@ -1,5 +1,13 @@
 import { relations } from "drizzle-orm";
-import { index, pgEnum, pgTable, text, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  index,
+  pgEnum,
+  pgTable,
+  text,
+  timestamp,
+  uniqueIndex,
+} from "drizzle-orm/pg-core";
 
 const timestamps = {
     createdAt : timestamp('created_at').defaultNow().notNull(),
@@ -18,20 +26,24 @@ export const user = pgTable('users', {
     ...timestamps
 });
 
-export const session = pgTable('session', {
+export const session = pgTable(
+  "session",
+  {
     id: text("id").primaryKey(),
-    userId: text("user_id").notNull().references(()=> user.id),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id),
     token: text("token").notNull(),
-    expiresAt: timestamp("expire_at").notNull(),
-    ipAddress: text("ip_address").notNull(),
-    userAgent: text("user_agent").notNull(),
+    expiresAt: timestamp("expires_at").notNull(),
+    ipAddress: text("ip_address"),
+    userAgent: text("user_agent"),
 
-    ...timestamps
-}, 
-(table) =>({
+    ...timestamps,
+  },
+  (table) => ({
     userIdIdx: index("session_user_id_idx").on(table.userId),
-    tokenUnique: uniqueIndex("session_token_unique").on(table.token)
-    })
+    tokenUnique: uniqueIndex("session_token_unique").on(table.token),
+  })
 );
 
 export const account = pgTable(
@@ -77,23 +89,23 @@ export const verification = pgTable(
   })
 );
 
-export const usersRelations = relations(user, ({many})=>({
-    sessions: many(session),
-    accounts: many(account) 
-}))
-
-export const sessionsRelations = relations(session, ({one})=>({
-    user: one(user, {
-        fields: [session.userId],
-        references: [user.id]
-    })
+export const usersRelations = relations(user, ({ many }) => ({
+  sessions: many(session),
+  accounts: many(account),
 }));
 
-export const accountsRelations = relations(account, ({ one })=>({
-    user: one(user, {
-        fields: [account.userId],
-        references: [user.id]
-    })
+export const sessionsRelations = relations(session, ({ one }) => ({
+  user: one(user, {
+    fields: [session.userId],
+    references: [user.id],
+  }),
+}));
+
+export const accountsRelations = relations(account, ({ one }) => ({
+  user: one(user, {
+    fields: [account.userId],
+    references: [user.id],
+  }),
 }));
 
 export type User = typeof user.$inferSelect;

@@ -1,7 +1,13 @@
 import express from "express";
 import cors from "cors";
-import subjectRoutes from "./routes/subjects.routes";
 import securityMiddleware from "./middleware/security";
+import { toNodeHandler } from "better-auth/node";
+import { auth } from "./utils/auth";
+
+// routes
+import subjectRoutes from "./routes/subjects.routes";
+import userRoutes from "./routes/users.routes";
+import classRoutes from "./routes/classes.routes";
 
 const app = express();
 
@@ -15,10 +21,13 @@ app.use(cors({
     credentials: true,
 }));
 
+app.all("/api/v1/auth/*splat", toNodeHandler(auth));
 app.use(express.json());
-app.use(securityMiddleware);
+// app.use(securityMiddleware);
 
 
 app.use("/api/v1/subjects", subjectRoutes);
+app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/classes", classRoutes);
 
 export default app;

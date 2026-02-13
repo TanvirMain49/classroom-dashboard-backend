@@ -1,6 +1,7 @@
 import arcjet, { shield, detectBot, slidingWindow } from "@arcjet/node";
 
 if(!process.env.ARCJET_KEY){
+  console.log(process.env.ARCJET_KEY)
     throw new Error(
     "ARCJET_KEY environment variable is required. Sign up for your Arcjet key at https://app.arcjet.com"
   );
@@ -9,7 +10,7 @@ if(!process.env.ARCJET_KEY){
 const aj = arcjet({
   // Get your site key from https://app.arcjet.com and set it as an environment
   // variable rather than hard coding.
-  key: process.env.ARCJET_KEY!,
+  key: process.env.ARCJET_KEY,
   characteristics: ["ip.src"],
   rules: [
     // Shield protects your app from common attacks e.g. SQL injection
