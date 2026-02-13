@@ -24,7 +24,7 @@ export const classesPostController = asyncHandler( async (req, res)=>{
         .values({...validatedData, inviteCode: generateInviteCode(), schedules:[]})
         .returning({ id: classes.id })
 
-        if( !createClass ) throw Error;
+        if( !createClass ) throw Error("Class creation failed");
 
         res.status(201).json({
             data: createClass

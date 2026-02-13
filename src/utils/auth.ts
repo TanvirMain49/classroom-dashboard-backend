@@ -3,16 +3,22 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "../db"; 
 import * as schema from "../schema/auth"
 
+const betterAuthSecret = process.env.BETTER_AUTH_SECRET;
+const frontendUrl = process.env.FRONTEND_URL;
+const betterAuthUrl = process.env.BETTER_AUTH_URL;
+if (!betterAuthSecret || !frontendUrl || !betterAuthUrl) {
+  throw new Error("BETTER_AUTH_SECRET, FRONTEND_URL, and BETTER_AUTH_URL are required.");
+}
+
+
 export const auth = betterAuth({
-    secret: process.env.BETTER_AUTH_SECRET!,
-    trustedOrigins: [ process.env.FRONTEND_URL! ],
+    secret: betterAuthSecret,
+    trustedOrigins: [frontendUrl],
     database: drizzleAdapter(db, {
         provider: "pg", 
         schema
     }),
-    baseURL: `${process.env.BETTER_AUTH_URL}/api/v1/auth`,
-    // This tells Better Auth to look for its internal logic at this sub-path
-    basePath: "/api/v1/auth",
+    baseURL: `${betterAuthUrl}/api/v1/auth`,
     emailAndPassword: {
         enabled: true
     },
