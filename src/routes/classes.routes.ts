@@ -1,8 +1,9 @@
 import express from 'express';
-import { classesPostController } from '../controller/classes.controller';
+import { classesGetController, classesPostController } from '../controller/classes.controller';
 
 const router = express.Router();
 
 router.route('/').post(classesPostController);
+router.route('/').get( classesGetController )
 
 export default router;
