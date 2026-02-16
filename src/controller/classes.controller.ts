@@ -69,12 +69,9 @@ export const classesGetController = asyncHandler(async (req, res) => {
   if (teacher) {
     filterConditions.push(ilike(user.name, `%${teacher}%`));
   }
-  console.log(filterConditions)
 
   const whereClause =
     filterConditions.length > 0 ? and(...filterConditions) : undefined;
-
-    // console.log(whereClause);
 
   const resultCount = await db
     .select({ count: sql<number>`count(*)` })
@@ -120,4 +117,34 @@ export const classesGetController = asyncHandler(async (req, res) => {
       totalPages: Math.ceil(totalCount / limitPerPage),
     },
   });
+});
+
+export const classesGetDetailsController = asyncHandler( async(req, res)=>{
+  const classId = Number(req.params.id);
+  if(!Number.isFinite(classId)) { 
+    res.status(400).json({ message: "No class found." }); 
+    return;
+  }
+  const [ classDetails ] = await db
+        .select({
+          ...getTableColumns(classes),
+          subject: {
+            ...getTableColumns(subjects)
+          },
+          teacher: {
+            ...getTableColumns(user)
+          }
+        })
+        .from(classes)
+        .leftJoin(subjects, eq(classes.subjectId, subjects.id))
+        .leftJoin(user, eq(classes.teacherId, user.id))
+        .where(eq(classes.id, classId))
+
+  if(!classDetails ) { 
+    res.status(400).json({ message: "No class found." }); 
+    return;
+  }
+
+  res.status(200).json({ data: classDetails });
+
 });

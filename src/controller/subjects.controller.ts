@@ -2,6 +2,7 @@ import { and, desc, eq, getTableColumns, ilike, or, sql } from "drizzle-orm";
 import { asyncHandler } from "../utils/async-handler.utils";
 import { departments, subjects } from "../schema";
 import { db } from "../db";
+import { subjectCreateSchema } from "../validators/subject.schema";
 
 const subjectsController = asyncHandler(async (req, res) => {
   const { search, department, page = 1, limit = 10 } = req.query;
@@ -64,4 +65,36 @@ const subjectsController = asyncHandler(async (req, res) => {
   });
 });
 
-export { subjectsController };
+const subjectsPostController = asyncHandler(async (req, res) => {
+  const validation = subjectCreateSchema.safeParse(req.body);
+
+  if (!validation.success) {
+    throw new Error(JSON.stringify(validation.error.flatten().fieldErrors));
+  }
+
+  const validatedData = validation.data;
+  
+  // Validation successful - Data reached the server and passed check
+  const isServerValidated = true;
+
+  const [createSubject] = await db
+    .insert(subjects)
+    .values({
+      departmentId: validatedData.departmentId,
+      code: validatedData.code,
+      name: validatedData.name,
+      description: validatedData.description,
+    })
+    .returning({ id: subjects.id });
+
+  if (!createSubject) {
+    throw new Error("Subject creation failed");
+  }
+
+  res.status(201).json({
+    data: createSubject,
+    validated: isServerValidated,
+  });
+});
+
+export { subjectsController, subjectsPostController };
