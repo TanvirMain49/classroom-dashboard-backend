@@ -1,5 +1,5 @@
 import { asyncHandler } from "../utils/async-handler.utils";
-import { classes, subjects, user } from "../schema/index";
+import { classes, departments, subjects, user } from "../schema/index";
 import { db } from "../db";
 import { classSchema } from "../validators/class.schema";
 import { customAlphabet } from "nanoid";
@@ -131,6 +131,9 @@ export const classesGetDetailsController = asyncHandler( async(req, res)=>{
           subject: {
             ...getTableColumns(subjects)
           },
+           department: {
+          ...getTableColumns(departments),
+        },
           teacher: {
             ...getTableColumns(user)
           }
@@ -138,6 +141,7 @@ export const classesGetDetailsController = asyncHandler( async(req, res)=>{
         .from(classes)
         .leftJoin(subjects, eq(classes.subjectId, subjects.id))
         .leftJoin(user, eq(classes.teacherId, user.id))
+        .leftJoin(departments, eq(subjects.departmentId, departments.id))
         .where(eq(classes.id, classId))
 
   if(!classDetails ) { 
