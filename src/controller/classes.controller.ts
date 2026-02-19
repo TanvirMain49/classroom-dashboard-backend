@@ -1,5 +1,5 @@
 import { asyncHandler } from "../utils/async-handler.utils";
-import { classes, departments, subjects, user } from "../schema/index";
+import { classes, departments, enrollments, subjects, user } from "../schema/index";
 import { db } from "../db";
 import { classSchema } from "../validators/class.schema";
 import { customAlphabet } from "nanoid";
@@ -151,4 +151,85 @@ export const classesGetDetailsController = asyncHandler( async(req, res)=>{
 
   res.status(200).json({ data: classDetails });
 
+});
+
+export const classesUserController = asyncHandler(async (req, res) => {
+  const classId = Number(req.params.id);
+
+  if (!Number.isFinite(classId)) {
+    res.status(400).json({ message: "Invalid Class ID provided." });
+    return;
+  }
+
+  const { role , page = 1, limit = 10 } = req.query;
+  if ( role !== "student") {
+    res.status(400).json({ message: "This endpoint only supports student rosters." });
+    return;
+  }
+
+  const currentPage = Math.max(1, Number(page));
+  const limitPerPage = Math.max(1, Number(limit));
+  const offset = (currentPage - 1) * limitPerPage;
+
+  // 4. BaseSelect and GroupSelect
+  const baseSelect = {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    image: user.image,
+    role: user.role,
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
+  };
+
+  const groupSelect = [
+    user.id,
+    user.name,
+    user.email,
+    user.image,
+    user.role,
+    user.createdAt,
+    user.updatedAt,
+  ];
+
+  // 5. Query countResult
+  const countResult = await db
+    .select({ count: sql<number>`count(${user.id})` })
+    .from(user)
+    .leftJoin(enrollments, eq(user.id, enrollments.studentId))
+    .where(
+      and(
+        eq(user.role, role),
+        eq(enrollments.classId, classId)
+      )
+    );
+
+  const totalCount = Number(countResult[0]?.count ?? 0);
+
+  // 6. UserList Query
+  const usersList = await db
+    .select(baseSelect)
+    .from(user)
+    .leftJoin(enrollments, eq(user.id, enrollments.studentId))
+    .where(
+      and(
+        eq(user.role, role),
+        eq(enrollments.classId, classId)
+      )
+    )
+    .groupBy(...groupSelect)
+    .orderBy(desc(user.createdAt))
+    .limit(limitPerPage)
+    .offset(offset);
+
+  // 7. Return Data
+  res.status(200).json({
+    data: usersList,
+    pagination: {
+      page: currentPage,
+      limit: limitPerPage,
+      total: totalCount,
+      totalPages: Math.ceil(totalCount / limitPerPage),
+    },
+  });
 });
