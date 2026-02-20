@@ -1,8 +1,11 @@
 import express from 'express';
-import { usersController } from '../controller/users.controller';
+import { getUserDepartmentsController, getUserDetailsController, getUsersController, getUserSubjectsController } from '../controller/users.controller';
 
 const router = express.Router();
 
-router.route('/').get(usersController);
+router.route('/').get( getUsersController );
+router.route('/:id').get( getUserDetailsController );
+router.route('/:id/departments').get( getUserDepartmentsController );
+router.route('/:id/subjects').get( getUserSubjectsController );
 
 export default router;
