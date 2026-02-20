@@ -69,7 +69,11 @@ const subjectsPostController = asyncHandler(async (req, res) => {
   const validation = subjectCreateSchema.safeParse(req.body);
 
   if (!validation.success) {
-    throw new Error(JSON.stringify(validation.error.flatten().fieldErrors));
+    res.status(400).json({
+      message: "Validation failed",
+      errors: validation.error.flatten().fieldErrors,
+    });
+    return;
   }
 
   const validatedData = validation.data;
