@@ -6,9 +6,9 @@ import { auth } from "./utils/auth";
 
 // routes
 import subjectRoutes from "./routes/subjects.routes";
-import userRoutes from "./routes/users.routes";
 import classRoutes from "./routes/classes.routes";
 import departmentRoutes from "./routes/departments.routes";
+import userRoutes from "./routes/users.routes";
 
 
 const app = express();
@@ -29,8 +29,8 @@ app.use(express.json());
 
 
 app.use("/api/v1/subjects", subjectRoutes);
-app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/classes", classRoutes);
 app.use("/api/v1/departments", departmentRoutes);
+app.use("/api/v1/users", userRoutes);
 
 export default app;
