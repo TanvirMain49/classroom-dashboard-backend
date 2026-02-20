@@ -135,7 +135,9 @@ export const classesGetDetailsController = asyncHandler( async(req, res)=>{
           ...getTableColumns(departments),
         },
           teacher: {
-            ...getTableColumns(user)
+            id: user.id,
+            name: user.name,
+            image: user.image,
           }
         })
         .from(classes)
