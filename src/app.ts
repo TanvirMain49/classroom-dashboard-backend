@@ -9,6 +9,7 @@ import subjectRoutes from "./routes/subjects.routes";
 import classRoutes from "./routes/classes.routes";
 import departmentRoutes from "./routes/departments.routes";
 import userRoutes from "./routes/users.routes";
+import statRoutes from "./routes/stats.routes";
 
 
 const app = express();
@@ -32,5 +33,6 @@ app.use("/api/v1/subjects", subjectRoutes);
 app.use("/api/v1/classes", classRoutes);
 app.use("/api/v1/departments", departmentRoutes);
 app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/stats", statRoutes);
 
 export default app;

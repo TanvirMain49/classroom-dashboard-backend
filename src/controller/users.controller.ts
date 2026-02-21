@@ -14,16 +14,15 @@ import { db } from "../db";
 export const getUsersController = asyncHandler(async (req, res) => {
   const { role, search, page = 1, limit = 10 } = req.query;
 
-  if (role !== "teacher" && role !== "student") {
-    res.status(400).json({ error: "Invalid role" });
-    return;
-  }
-
   const currentPage = Math.max(1, +page);
   const limitPerPage = Math.max(1, +limit);
   const offset = (currentPage - 1) * limitPerPage;
 
   const filterConditions = [];
+
+  if (role) {
+      filterConditions.push(eq(user.role, role as UserRoles));
+    }
 
   if (search) {
     filterConditions.push(
@@ -37,14 +36,14 @@ export const getUsersController = asyncHandler(async (req, res) => {
   const countResult = await db
     .select({ count: sql<number>`count(*)` })
     .from(user)
-    .where(and(whereClause, eq(user.role, role)));
+    .where(whereClause);
 
   const totalCount = countResult[0]?.count ?? 0;
 
   const userList = await db
     .select()
     .from(user)
-    .where(and(whereClause, eq(user.role, role)))
+    .where(whereClause)
     .offset(offset)
     .limit(limitPerPage)
     .orderBy(desc(user.createdAt));
