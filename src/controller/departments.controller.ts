@@ -72,6 +72,8 @@ export const departmentsController = asyncHandler(async (req, res) => {
 export const departmentsPostController = asyncHandler(async (req, res) => {
   const validationResult = departmentSchema.safeParse(req.body);
 
+  console.log("Req user",  req?.user);
+
   if (!validationResult.success) {
     res.status(400).json({
       success: false,
@@ -211,6 +213,7 @@ export const departmentSubjectsController = asyncHandler(async (req, res) => {
 });
 
 export const departmentClassesController = asyncHandler(async (req, res) => {
+    console.log("Req user", req?.user);
   const departmentId = Number(req.params.id);
   if (!Number.isFinite(departmentId)) {
     res.status(400).json({ message: "No department found." });

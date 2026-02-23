@@ -3,8 +3,8 @@ import { statsChart, statsLatest, statsOverView } from '../controller/stats.cont
 
 const router = express.Router();
 
-router.route('/overview').get(statsOverView);
-router.route('/latest').get(statsLatest);
+// router.route('/overview').get(statsOverView);
+// router.route('/latest').get(statsLatest);
 router.route('/chart').get(statsChart);
 
 
