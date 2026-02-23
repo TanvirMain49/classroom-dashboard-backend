@@ -10,6 +10,7 @@ import classRoutes from "./routes/classes.routes";
 import departmentRoutes from "./routes/departments.routes";
 import userRoutes from "./routes/users.routes";
 import statRoutes from "./routes/stats.routes";
+import enrollmentRoutes from "./routes/enrollments.routes";
 
 
 const app = express();
@@ -34,5 +35,6 @@ app.use("/api/v1/classes", classRoutes);
 app.use("/api/v1/departments", departmentRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/stats", statRoutes);
+app.use("/api/v1/enrollments", enrollmentRoutes);
 
 export default app;

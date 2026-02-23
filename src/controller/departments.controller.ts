@@ -71,9 +71,6 @@ export const departmentsController = asyncHandler(async (req, res) => {
 
 export const departmentsPostController = asyncHandler(async (req, res) => {
   const validationResult = departmentSchema.safeParse(req.body);
-
-  console.log("Req user",  req?.user);
-
   if (!validationResult.success) {
     res.status(400).json({
       success: false,
