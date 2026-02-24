@@ -1,10 +1,10 @@
 import express from 'express';
-import { enrollmentPostController } from '../controller/enrollments.controller';
+import { enrollmentJoin, enrollmentPostController } from '../controller/enrollments.controller';
 
 const router = express.Router();
 
 router.route('/').post(enrollmentPostController);
-router.route('/join').get(enrollmentPostController);
+router.route('/join').post(enrollmentJoin);
 
 
 export default router;
